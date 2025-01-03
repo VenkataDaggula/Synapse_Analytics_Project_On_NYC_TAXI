@@ -1,0 +1,379 @@
+{
+    "name": "1_spark_create_gold_trip_data_green_agg",
+    "properties": {
+        "nbformat": 4,
+        "nbformat_minor": 2,
+        "bigDataPool": {
+            "referenceName": "sparkpool",
+            "type": "BigDataPoolReference"
+        },
+        "sessionProperties": {
+            "driverMemory": "28g",
+            "driverCores": 4,
+            "executorMemory": "28g",
+            "executorCores": 4,
+            "numExecutors": 2,
+            "runAsWorkspaceSystemIdentity": false,
+            "conf": {
+                "spark.dynamicAllocation.enabled": "false",
+                "spark.dynamicAllocation.minExecutors": "2",
+                "spark.dynamicAllocation.maxExecutors": "2",
+                "spark.autotune.trackingId": "3ffe3ad0-ce8b-489f-9a42-86381f84903f"
+            }
+        },
+        "metadata": {
+            "saveOutput": true,
+            "synapse_widget": {
+                "version": "0.1"
+            },
+            "enableDebugMode": false,
+            "language_info": {
+                "name": "python"
+            },
+            "a365ComputeOptions": {
+                "id": "/subscriptions/310664c9-716f-485c-86c6-cd70a08e5ff7/resourceGroups/syn-rg/providers/Microsoft.Synapse/workspaces/synapse-pro/bigDataPools/sparkpool",
+                "name": "sparkpool",
+                "type": "Spark",
+                "endpoint": "https://synapse-pro.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+                "auth": {
+                    "type": "AAD",
+                    "authResource": "https://dev.azuresynapse.net",
+                    "authHeader": null
+                },
+                "sparkVersion": "3.4",
+                "nodeCount": 10,
+                "cores": 4,
+                "memory": 28,
+                "extraHeader": null
+            },
+            "sessionKeepAliveTimeout": 30
+        },
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {
+                    "nteract": {
+                        "transient": {
+                            "deleting": false
+                        }
+                    }
+                },
+                "source": [
+                    "## Trip Data Aggregation \n",
+                    "### Group By Columns\n",
+                    "1. year\n",
+                    "2. Month\n",
+                    "3. Pickup Location ID\n",
+                    "4. Drop Off Location ID\n",
+                    "\n",
+                    "### Aggregated Columns\n",
+                    "1. Total Trip Count\n",
+                    "2. Total Fare Amount\n",
+                    "\n",
+                    "### Purpose of the notebook\n",
+                    "\n",
+                    "Demonstrate the integration between Spark Pool and Serverless SQL Pool\n",
+                    "\n",
+                    "1. Create the aggregated table in Spark Pool\n",
+                    "2. Access the data from Serverless SQL Pool "
+                ]
+            },
+            {
+                "cell_type": "code",
+                "metadata": {
+                    "jupyter": {
+                        "source_hidden": false,
+                        "outputs_hidden": false
+                    },
+                    "nteract": {
+                        "transient": {
+                            "deleting": false
+                        }
+                    }
+                },
+                "source": [
+                    "#Set the folder paths so that it can be used later. \n",
+                    "bronze_folder_path = 'abfss://nyc-taxi-data@synsacpro.dfs.core.windows.net/raw'\n",
+                    "silver_folder_path = 'abfss://nyc-taxi-data@synsacpro.dfs.core.windows.net/silver'\n",
+                    "gold_folder_path = 'abfss://nyc-taxi-data@synsacpro.dfs.core.windows.net/gold'"
+                ],
+                "outputs": [
+                    {
+                        "output_type": "display_data",
+                        "data": {
+                            "application/vnd.livy.statement-meta+json": {
+                                "spark_pool": "sparkpool",
+                                "statement_id": 11,
+                                "statement_ids": [
+                                    11
+                                ],
+                                "state": "finished",
+                                "livy_statement_state": "available",
+                                "spark_jobs": null,
+                                "session_id": "2",
+                                "normalized_state": "finished",
+                                "queued_time": "2024-12-30T17:21:40.2907719Z",
+                                "session_start_time": null,
+                                "execution_start_time": "2024-12-30T17:21:40.4560497Z",
+                                "execution_finish_time": "2024-12-30T17:21:40.626518Z",
+                                "parent_msg_id": "ae5d84be-eef0-4cfc-801e-aa1e14844049"
+                            },
+                            "text/plain": "StatementMeta(sparkpool, 2, 11, Finished, Available, Finished)"
+                        }
+                    }
+                ],
+                "execution_count": 10
+            },
+            {
+                "cell_type": "code",
+                "metadata": {
+                    "jupyter": {
+                        "source_hidden": false,
+                        "outputs_hidden": false
+                    },
+                    "nteract": {
+                        "transient": {
+                            "deleting": false
+                        }
+                    }
+                },
+                "source": [
+                    "#Set the spark config to be able to get the partitioned columns year and month as strings rather than integers\n",
+                    "spark.conf.set(\"spark.sql.sources.partitionColumnTypeInference.enabled\", \"false\")"
+                ],
+                "outputs": [
+                    {
+                        "output_type": "display_data",
+                        "data": {
+                            "application/vnd.livy.statement-meta+json": {
+                                "spark_pool": "sparkpool",
+                                "statement_id": 12,
+                                "statement_ids": [
+                                    12
+                                ],
+                                "state": "finished",
+                                "livy_statement_state": "available",
+                                "spark_jobs": null,
+                                "session_id": "2",
+                                "normalized_state": "finished",
+                                "queued_time": "2024-12-30T17:21:40.4032003Z",
+                                "session_start_time": null,
+                                "execution_start_time": "2024-12-30T17:21:40.800191Z",
+                                "execution_finish_time": "2024-12-30T17:21:40.9683767Z",
+                                "parent_msg_id": "d1476f5e-fe69-4c0f-8f2f-3c9c3cfa9ce9"
+                            },
+                            "text/plain": "StatementMeta(sparkpool, 2, 12, Finished, Available, Finished)"
+                        }
+                    }
+                ],
+                "execution_count": 11
+            },
+            {
+                "cell_type": "code",
+                "metadata": {
+                    "microsoft": {
+                        "language": "sparksql"
+                    },
+                    "jupyter": {
+                        "source_hidden": false,
+                        "outputs_hidden": false
+                    },
+                    "nteract": {
+                        "transient": {
+                            "deleting": false
+                        }
+                    },
+                    "collapsed": false
+                },
+                "source": [
+                    "%%sql\n",
+                    "\n",
+                    "-- Create database to which we are going to write the data\n",
+                    "\n",
+                    "CREATE DATABASE IF NOT EXISTS nyc_taxi_ldw_spark\n",
+                    "LOCATION 'abfss://nyc-taxi-data@synsacpro.dfs.core.windows.net/gold';"
+                ],
+                "outputs": [
+                    {
+                        "output_type": "display_data",
+                        "data": {
+                            "application/vnd.livy.statement-meta+json": {
+                                "spark_pool": "sparkpool",
+                                "statement_id": 13,
+                                "statement_ids": [
+                                    13
+                                ],
+                                "state": "finished",
+                                "livy_statement_state": "available",
+                                "spark_jobs": null,
+                                "session_id": "2",
+                                "normalized_state": "finished",
+                                "queued_time": "2024-12-30T17:21:40.4697905Z",
+                                "session_start_time": null,
+                                "execution_start_time": "2024-12-30T17:21:41.1221893Z",
+                                "execution_finish_time": "2024-12-30T17:21:42.2194984Z",
+                                "parent_msg_id": "31970d62-1c52-4b5c-a6cb-0d0b370f3908"
+                            },
+                            "text/plain": "StatementMeta(sparkpool, 2, 13, Finished, Available, Finished)"
+                        }
+                    },
+                    {
+                        "execution_count": 12,
+                        "output_type": "execute_result",
+                        "data": {
+                            "application/vnd.synapse.sparksql-result+json": {
+                                "schema": {
+                                    "type": "struct",
+                                    "fields": []
+                                },
+                                "data": []
+                            },
+                            "text/plain": "<Spark SQL result set with 0 rows and 0 fields>"
+                        }
+                    }
+                ],
+                "execution_count": 12
+            },
+            {
+                "cell_type": "code",
+                "metadata": {
+                    "jupyter": {
+                        "source_hidden": false,
+                        "outputs_hidden": false
+                    },
+                    "nteract": {
+                        "transient": {
+                            "deleting": false
+                        }
+                    }
+                },
+                "source": [
+                    "# Read the silver data to be processed. \n",
+                    "trip_data_green_df = spark.read.parquet(f\"{silver_folder_path}/trip_data_green\") "
+                ],
+                "outputs": [
+                    {
+                        "output_type": "display_data",
+                        "data": {
+                            "application/vnd.livy.statement-meta+json": {
+                                "spark_pool": "sparkpool",
+                                "statement_id": 14,
+                                "statement_ids": [
+                                    14
+                                ],
+                                "state": "finished",
+                                "livy_statement_state": "available",
+                                "spark_jobs": null,
+                                "session_id": "2",
+                                "normalized_state": "finished",
+                                "queued_time": "2024-12-30T17:21:40.6672997Z",
+                                "session_start_time": null,
+                                "execution_start_time": "2024-12-30T17:21:42.3712083Z",
+                                "execution_finish_time": "2024-12-30T17:21:43.473328Z",
+                                "parent_msg_id": "2d25c652-290f-4357-a484-54233191f2d7"
+                            },
+                            "text/plain": "StatementMeta(sparkpool, 2, 14, Finished, Available, Finished)"
+                        }
+                    }
+                ],
+                "execution_count": 13
+            },
+            {
+                "cell_type": "code",
+                "metadata": {
+                    "jupyter": {
+                        "source_hidden": false,
+                        "outputs_hidden": false
+                    },
+                    "nteract": {
+                        "transient": {
+                            "deleting": false
+                        }
+                    }
+                },
+                "source": [
+                    "# Perform the required aggregations\n",
+                    "# 1. Total trip count\n",
+                    "# 2. Total fare amount\n",
+                    "from pyspark.sql.functions import *\n",
+                    "\n",
+                    "trip_data_green_agg_df = trip_data_green_df \\\n",
+                    "                        .groupBy(\"year\", \"month\", \"pu_location_id\", \"do_location_id\") \\\n",
+                    "                        .agg(count(lit(1)).alias(\"total_trip_count\"),\n",
+                    "                        round(sum(\"fare_amount\"), 2).alias(\"total_fare_amount\"))"
+                ],
+                "outputs": [
+                    {
+                        "output_type": "display_data",
+                        "data": {
+                            "application/vnd.livy.statement-meta+json": {
+                                "spark_pool": "sparkpool",
+                                "statement_id": 15,
+                                "statement_ids": [
+                                    15
+                                ],
+                                "state": "finished",
+                                "livy_statement_state": "available",
+                                "spark_jobs": null,
+                                "session_id": "2",
+                                "normalized_state": "finished",
+                                "queued_time": "2024-12-30T17:21:40.7773314Z",
+                                "session_start_time": null,
+                                "execution_start_time": "2024-12-30T17:21:43.6311992Z",
+                                "execution_finish_time": "2024-12-30T17:21:43.7945271Z",
+                                "parent_msg_id": "9aa9c44c-fb44-4fc0-b451-9d02ff63488a"
+                            },
+                            "text/plain": "StatementMeta(sparkpool, 2, 15, Finished, Available, Finished)"
+                        }
+                    }
+                ],
+                "execution_count": 14
+            },
+            {
+                "cell_type": "code",
+                "metadata": {
+                    "jupyter": {
+                        "source_hidden": false,
+                        "outputs_hidden": false
+                    },
+                    "nteract": {
+                        "transient": {
+                            "deleting": false
+                        }
+                    }
+                },
+                "source": [
+                    "# Write the aggregated data to the gold table for consumption\n",
+                    "\n",
+                    "trip_data_green_agg_df.write.mode(\"overwrite\").partitionBy(\"year\", \"month\").format(\"parquet\").saveAsTable(\"nyc_taxi_ldw_spark.trip_data_green_agg\")"
+                ],
+                "outputs": [
+                    {
+                        "output_type": "display_data",
+                        "data": {
+                            "application/vnd.livy.statement-meta+json": {
+                                "spark_pool": "sparkpool",
+                                "statement_id": 16,
+                                "statement_ids": [
+                                    16
+                                ],
+                                "state": "finished",
+                                "livy_statement_state": "available",
+                                "spark_jobs": null,
+                                "session_id": "2",
+                                "normalized_state": "finished",
+                                "queued_time": "2024-12-30T17:21:40.9203635Z",
+                                "session_start_time": null,
+                                "execution_start_time": "2024-12-30T17:21:43.9460342Z",
+                                "execution_finish_time": "2024-12-30T17:21:54.6848348Z",
+                                "parent_msg_id": "5cba981a-4b47-49b1-9aa4-095fe9f5c8d8"
+                            },
+                            "text/plain": "StatementMeta(sparkpool, 2, 16, Finished, Available, Finished)"
+                        }
+                    }
+                ],
+                "execution_count": 15
+            }
+        ]
+    }
+}

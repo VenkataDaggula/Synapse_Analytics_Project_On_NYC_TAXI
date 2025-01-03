@@ -1,0 +1,23 @@
+{
+    "now": "2025-01-03T06:12:51.103Z",
+    "perfNow": 1873680.099999994,
+    "diagnosticCorrelation": "b8ddb9c1-d5ac-4a75-84be-ad4000ee5178",
+    "source": "DownloadSupportFiles",
+    "environment": {
+        "productName": "a365",
+        "buildVersion": "24.1217.07",
+        "environmentType": 9,
+        "resourceName": "synapse-pro",
+        "resourceRegion": "centralus",
+        "resourceGroup": "syn-rg",
+        "subscriptionId": "310664c9-716f-485c-86c6-cd70a08e5ff7",
+        "sessionId": "1qsZ+jo/KH85D5Fi2QHH+J",
+        "operationId": "82RK?",
+        "gitType": "live",
+        "loggingKey": "9543a857-a154-4b43-8f8b-966937057d90"
+    },
+    "additionalInfo": {
+        "selectedResource": "1_pl_create_silver_taxi",
+        "selectedResourceType": "pipeline"
+    }
+}

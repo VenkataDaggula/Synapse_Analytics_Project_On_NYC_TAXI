@@ -1,0 +1,22 @@
+{
+    "name": "sparkpool",
+    "location": "centralus",
+    "properties": {
+        "autoPause": {
+            "enabled": true,
+            "delayInMinutes": 15
+        },
+        "autoScale": {
+            "enabled": true,
+            "maxNodeCount": 3,
+            "minNodeCount": 3
+        },
+        "nodeCount": 10,
+        "nodeSize": "Small",
+        "nodeSizeFamily": "MemoryOptimized",
+        "sparkVersion": "3.4",
+        "isComputeIsolationEnabled": false,
+        "sessionLevelPackagesEnabled": false,
+        "annotations": []
+    }
+}

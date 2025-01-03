@@ -1,0 +1,23 @@
+{
+    "now": "2025-01-03T06:11:59.525Z",
+    "perfNow": 1822102.2999999821,
+    "diagnosticCorrelation": "b31adc73-71c4-48ab-a1f0-fb2dd75b2925",
+    "source": "DownloadSupportFiles",
+    "environment": {
+        "productName": "a365",
+        "buildVersion": "24.1217.07",
+        "environmentType": 9,
+        "resourceName": "synapse-pro",
+        "resourceRegion": "centralus",
+        "resourceGroup": "syn-rg",
+        "subscriptionId": "310664c9-716f-485c-86c6-cd70a08e5ff7",
+        "sessionId": "1qsZ+jo/KH85D5Fi2QHH+J",
+        "operationId": "82RK?",
+        "gitType": "live",
+        "loggingKey": "9543a857-a154-4b43-8f8b-966937057d90"
+    },
+    "additionalInfo": {
+        "selectedResource": "5_pl_create_gold_trip_data_green",
+        "selectedResourceType": "pipeline"
+    }
+}

@@ -1,0 +1,6 @@
+selected resource name:		6_pl_create_gold_trip_data_green_agg
+selected resource type:		pipeline
+workspace name:			synapse-pro
+workspace location:		centralus
+subscription id:		310664c9-716f-485c-86c6-cd70a08e5ff7
+time of download (UTC):		Fri, 03 Jan 2025 06:12:40 GMT

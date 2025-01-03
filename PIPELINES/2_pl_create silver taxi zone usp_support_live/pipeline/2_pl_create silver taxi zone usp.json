@@ -1,0 +1,65 @@
+{
+    "name": "2_pl_create silver taxi zone usp",
+    "properties": {
+        "activities": [
+            {
+                "name": "delete silver taxi zone folder",
+                "type": "Delete",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "dataset": {
+                        "referenceName": "ds_silver_taxi_zone",
+                        "type": "DatasetReference"
+                    },
+                    "enableLogging": false,
+                    "storeSettings": {
+                        "type": "AzureBlobFSReadSettings",
+                        "recursive": true,
+                        "enablePartitionDiscovery": false
+                    }
+                }
+            },
+            {
+                "name": "Stored procedure1",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "delete silver taxi zone folder",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "storedProcedureName": "[silver].[usp_silver_taxi_zone]"
+                },
+                "linkedServiceName": {
+                    "referenceName": "ls_serverless_sql_pool_nyc_taxi_ldw",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "folder": {
+            "name": "Demo"
+        },
+        "annotations": [],
+        "lastPublishTime": "2024-12-30T06:03:58Z"
+    },
+    "type": "Microsoft.Synapse/workspaces/pipelines"
+}

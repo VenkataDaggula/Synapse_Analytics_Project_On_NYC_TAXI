@@ -1,0 +1,6 @@
+selected resource name:		3_pl_create silver table dynamic
+selected resource type:		pipeline
+workspace name:			synapse-pro
+workspace location:		centralus
+subscription id:		310664c9-716f-485c-86c6-cd70a08e5ff7
+time of download (UTC):		Fri, 03 Jan 2025 06:11:48 GMT

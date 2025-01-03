@@ -1,0 +1,94 @@
+{
+    "name": "pl_execute all pipelines",
+    "properties": {
+        "activities": [
+            {
+                "name": "Execute create silver table",
+                "type": "ExecutePipeline",
+                "dependsOn": [],
+                "policy": {
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "pipeline": {
+                        "referenceName": "3_pl_create silver table dynamic",
+                        "type": "PipelineReference"
+                    },
+                    "waitOnCompletion": true
+                }
+            },
+            {
+                "name": "Execute Create Silver Trip Data Green",
+                "type": "ExecutePipeline",
+                "dependsOn": [],
+                "policy": {
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "pipeline": {
+                        "referenceName": "4_pl_create_silver_trip_data_green",
+                        "type": "PipelineReference"
+                    },
+                    "waitOnCompletion": true
+                }
+            },
+            {
+                "name": "create gold trip data green",
+                "type": "ExecutePipeline",
+                "dependsOn": [
+                    {
+                        "activity": "Execute create silver table",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    {
+                        "activity": "Execute Create Silver Trip Data Green",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "pipeline": {
+                        "referenceName": "5_pl_create_gold_trip_data_green",
+                        "type": "PipelineReference"
+                    },
+                    "waitOnCompletion": true
+                }
+            },
+            {
+                "name": "create gold trip data green_agg",
+                "type": "ExecutePipeline",
+                "dependsOn": [
+                    {
+                        "activity": "Execute Create Silver Trip Data Green",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "pipeline": {
+                        "referenceName": "6_pl_create_gold_trip_data_green_agg",
+                        "type": "PipelineReference"
+                    },
+                    "waitOnCompletion": true
+                }
+            }
+        ],
+        "annotations": [],
+        "lastPublishTime": "2024-12-30T17:25:31Z"
+    },
+    "type": "Microsoft.Synapse/workspaces/pipelines"
+}
